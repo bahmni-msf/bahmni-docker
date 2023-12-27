@@ -118,7 +118,9 @@ services:
   metabase:
     image: bahmni/bahmni-metabase:${METABASE_IMAGE_TAG:?}
     restart: on-failure:[3]
-    profiles: ["metabase", "bahmni-mart"]
+    profiles: ["metabase", "bahmni-mart" ,"emr"]
+    ports:
+      - "9003:3000"
     environment:
       TZ: ${TZ}
       MB_ADMIN_EMAIL: ${METABASE_ADMIN_EMAIL:?}
