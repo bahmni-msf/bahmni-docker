@@ -18,7 +18,7 @@ x-log-config: &log-config
 services:
 
   proxy:
-    image: 'bahmni/proxy:${PROXY_IMAGE_TAG:?}'
+    image: '485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/proxy:${PROXY_IMAGE_TAG:?}'
     #volumes:
       # - ${CERTIFICATE_PATH}:/etc/tls
     ports:
@@ -29,21 +29,14 @@ services:
       TZ: ${TZ}
 
   bahmni-config:
-    image: 'bahmni/clinic-config:${CONFIG_IMAGE_TAG:?}'
+    image: bahmni/clinic-config:${CONFIG_IMAGE_TAG:?}
     volumes:
       - '${CONFIG_VOLUME:?}:/usr/local/bahmni_config'
     logging: *log-config
 
-  bahmni-lab:
-    profiles: ["lab-lite","emr","bahmni-lite"]
-    image: 'bahmni/bahmni-lab:${BAHMNI_LAB_IMAGE_TAG:?}'
-    logging: *log-config
-    environment:
-      TZ: ${TZ}
-
   openmrs:
     profiles: ["emr","bahmni-lite", "bahmni-mart"]
-    image: bahmni/openmrs:${OPENMRS_IMAGE_TAG:?}
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/openmrs:${OPENMRS_IMAGE_TAG:?}
     environment:
       TZ: ${TZ}
       OMRS_DB_NAME: ${OPENMRS_DB_NAME:?}
@@ -104,7 +97,7 @@ services:
     logging: *log-config
 
   metabasedb:
-    image: postgres:${METABASE_POSTGRES_IMAGE_TAG:?}
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/postgres:${METABASE_POSTGRES_IMAGE_TAG:?}
     restart: on-failure:[3]
     profiles: ["metabase", "bahmni-mart" ,"emr"]
     environment:
@@ -116,7 +109,7 @@ services:
       - 'metabase-data:/var/lib/postgresql/data'
 
   metabase:
-    image: bahmni/bahmni-metabase:${METABASE_IMAGE_TAG:?}
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/bahmni/bahmni-metabase:${METABASE_IMAGE_TAG:?}
     restart: on-failure:[3]
     profiles: ["metabase", "bahmni-mart" ,"emr"]
     ports:
@@ -144,7 +137,7 @@ services:
      - metabasedb
 
   martdb:
-    image: postgres:${BAHMNI_MART_DB_IMAGE_TAG:?}
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/postgres:${BAHMNI_MART_DB_IMAGE_TAG:?}
     profiles: ["bahmni-mart" ,"emr"]
     environment:
       TZ: ${TZ}
@@ -155,7 +148,7 @@ services:
       - 'mart-data:/var/lib/postgresql/data'
 
   mart:
-    image: bahmni/bahmni-mart:${BAHMNI_MART_IMAGE_TAG:?}
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/mart:${BAHMNI_MART_IMAGE_TAG:?}
     profiles: ["bahmni-mart" ,"emr"]
     environment:
       TZ: ${TZ}
@@ -176,7 +169,7 @@ services:
      - 'bahmni-clinical-forms:/home/bahmni/clinical_forms'
 
   bahmni-web:
-    image: bahmni/bahmni-web:${BAHMNI_WEB_IMAGE_TAG:?}
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/bahmni-web:${BAHMNI_WEB_IMAGE_TAG:?}
     profiles: ["emr","bahmni-lite","bahmni-mart"]
     volumes:
       - "${CONFIG_VOLUME:?}:/usr/local/apache2/htdocs/bahmni_config/:ro"
@@ -185,7 +178,7 @@ services:
     logging: *log-config
 
   implementer-interface:
-    image: bahmni/implementer-interface:${IMPLEMENTER_INTERFACE_IMAGE_TAG:?}
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/implementer-interface:${IMPLEMENTER_INTERFACE_IMAGE_TAG:?}
     profiles: ["implementer-interface","emr","bahmni-lite"]
     #volumes:
     #  - "${IMPLEMENTER_INTERFACE_CODE_PATH:?}/dist:/usr/local/apache2/htdocs/implementer-interface"
@@ -194,7 +187,7 @@ services:
     logging: *log-config
 
   reports:
-    image: bahmni/reports:${REPORTS_IMAGE_TAG:?}
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/bahmni/reports:${REPORTS_IMAGE_TAG:?}
     profiles: ["reports","bahmni-lite"]
     environment:
       TZ: ${TZ}
@@ -219,7 +212,7 @@ services:
 
   reportsdb:
     platform: linux/amd64
-    image: mysql:5.7
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/mysql:5.7
     profiles: ["reports","bahmni-lite"]
     environment:
       TZ: ${TZ}
@@ -232,7 +225,7 @@ services:
     logging: *log-config
 
   patient-documents:
-    image: 'bahmni/patient-documents:${PATIENT_DOCUMENTS_TAG:?}'
+    image: '485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/bahmni/patient-documents:${PATIENT_DOCUMENTS_TAG:?}'
     profiles: ["emr","bahmni-lite"]
     volumes:
       - 'bahmni-document-images:/usr/share/nginx/html/document_images'
@@ -246,7 +239,7 @@ services:
     logging: *log-config
 
   appointments:
-    image: bahmni/appointments:${APPOINTMENTS_IMAGE_TAG:?}
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/appointments:${APPOINTMENTS_IMAGE_TAG:?}
     profiles: ["emr","bahmni-lite"]
     # volumes:
     # - "${APPOINTMENTS_PATH:?}/dist/:/usr/local/apache2/htdocs/appointments"
