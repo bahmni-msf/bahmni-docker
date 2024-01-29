@@ -29,7 +29,7 @@ services:
       TZ: ${TZ}
 
   bahmni-config:
-    image: bahmni/clinic-config:${CONFIG_IMAGE_TAG:?}
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/malawi-config:${CONFIG_IMAGE_TAG:?}
     volumes:
       - '${CONFIG_VOLUME:?}:/usr/local/bahmni_config'
     logging: *log-config
@@ -188,7 +188,7 @@ services:
 
   reports:
     image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/bahmni/reports:${REPORTS_IMAGE_TAG:?}
-    profiles: ["reports","bahmni-lite"]
+    profiles: ["reports","bahmni-lite", "emr"]
     environment:
       TZ: ${TZ}
       OPENMRS_DB_HOST: ${OPENMRS_DB_HOST:?}
@@ -213,7 +213,7 @@ services:
   reportsdb:
     platform: linux/amd64
     image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/mysql:5.7
-    profiles: ["reports","bahmni-lite"]
+    profiles: ["reports","bahmni-lite", "emr"]
     environment:
       TZ: ${TZ}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
