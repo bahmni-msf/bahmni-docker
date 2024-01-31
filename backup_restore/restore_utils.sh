@@ -120,7 +120,7 @@ function restore_db() {
             if [[ $db_type == "mysql" ]]; then
                 log_info "Starting MySQL Restore for database: $db_name"
                 if [[ $BAHMNI_DOCKER_ENV_FILE != "$COMPOSE_ENV_PROD" ]]; then
-                    docker-compose --env-file ${BAHMNI_DOCKER_ENV_FILE} exec -T $db_service_name mysql -u root -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL ON *.* to '\"$OPENMRS_DB_USERNAME\"'@'%' IDENTIFIED BY '\"$OPENMRS_DB_PASSWORD\"';FLUSH PRIVILEGES;"
+                    docker compose --env-file ${BAHMNI_DOCKER_ENV_FILE} exec -T $db_service_name mysql -u root -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL ON *.* to '\"$OPENMRS_DB_USERNAME\"'@'%' IDENTIFIED BY '\"$OPENMRS_DB_PASSWORD\"';FLUSH PRIVILEGES;"
                 fi
                 docker compose --env-file ${BAHMNI_DOCKER_ENV_FILE} exec -T $db_service_name mysql -u $db_username --password=$db_password $db_name < $db_backup_file_path
             elif [[ $db_type == "postgres" ]]; then
