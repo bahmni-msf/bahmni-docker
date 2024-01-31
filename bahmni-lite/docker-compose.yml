@@ -66,21 +66,21 @@ services:
       # - ${OMRS_DEV_DEBUG_PORT}:${OMRS_DEV_DEBUG_PORT}
     volumes:
       - "${CONFIG_VOLUME:?}:/etc/bahmni_config/:ro"
-      - "bahmni-lab-results:/home/bahmni/uploaded_results"
+      # - "bahmni-lab-results:/home/bahmni/uploaded_results"
       - "bahmni-uploaded-files:/home/bahmni/uploaded-files"
       # - "${BAHMNI_OPENMRS_MODULES_PATH:?}/:/openmrs/data/modules/"
       - 'bahmni-patient-images:/home/bahmni/patient_images'
       - 'bahmni-document-images:/home/bahmni/document_images'
       - 'bahmni-clinical-forms:/home/bahmni/clinical_forms'
       - 'configuration_checksums:/openmrs/data/configuration_checksums'
-      - 'sms-token:/openmrs/data/sms-token'
+      # - 'sms-token:/openmrs/data/sms-token'
 
     depends_on:
       - openmrsdb
     logging: *log-config
 
   openmrsdb:
-    image: ${OPENMRS_DB_IMAGE_NAME:?}
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/mysql:${OPENMRS_DB_IMAGE_NAME:?}
     restart: always
     profiles: ["emr","bahmni-lite", "metabase", "bahmni-mart"]
     command: --character-set-server=utf8 --collation-server=utf8_general_ci
@@ -212,7 +212,7 @@ services:
 
   reportsdb:
     platform: linux/amd64
-    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/mysql:5.7
+    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/mysql:${REPORTS_DB_TAG:?}
     profiles: ["reports","bahmni-lite", "emr"]
     environment:
       TZ: ${TZ}
@@ -229,7 +229,7 @@ services:
     profiles: ["emr","bahmni-lite"]
     volumes:
       - 'bahmni-document-images:/usr/share/nginx/html/document_images'
-      - 'bahmni-lab-results:/usr/share/nginx/html/uploaded_results'
+      # - 'bahmni-lab-results:/usr/share/nginx/html/uploaded_results'
       - 'bahmni-uploaded-files:/usr/share/nginx/html/uploaded-files'
     environment:
       TZ: ${TZ}
@@ -254,7 +254,7 @@ services:
         - 'bahmni-patient-images:/mounts/bahmni-patient-images'
         - 'bahmni-document-images:/mounts/bahmni-document-images'
         - 'bahmni-clinical-forms:/mounts/bahmni-clinical-forms'
-        - 'bahmni-lab-results:/mounts/bahmni-lab-results'
+        # - 'bahmni-lab-results:/mounts/bahmni-lab-results'
         - 'bahmni-uploaded-files:/mounts/bahmni-uploaded-files'
         - 'bahmni-queued-reports:/mounts/bahmni-queued-reports'
         - 'configuration_checksums:/mounts/configuration_checksums'
@@ -262,17 +262,13 @@ services:
 volumes:
   openmrs-data:
   openmrsdbdata:
-  craterdb:
   bahmni-patient-images:
   bahmni-document-images:
   bahmni-clinical-forms:
-  crater-app-data:
   bahmni-config:
   configuration_checksums:
   mart-data:
   metabase-data:
-  bahmni-lab-results:
   bahmni-uploaded-files:
-  sms-token:
   bahmni-queued-reports:
   reportsdbdata:
