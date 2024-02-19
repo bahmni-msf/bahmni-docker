@@ -90,6 +90,9 @@ services:
       MYSQL_DATABASE: ${OPENMRS_DB_NAME:?}
       MYSQL_USER: ${OPENMRS_DB_USERNAME:?}
       MYSQL_PASSWORD: ${OPENMRS_DB_PASSWORD:?}
+      MYSQL_LOWER_CASE_TABLE_NAMES: ${MYSQL_LOWER_CASE_TABLE_NAMES}
+      HOST_IP: ${HOST_IP}
+      HOST_PORT: ${HOST_PORT}
     volumes:
       - 'openmrsdbdata:/var/lib/mysql'
       - 'configuration_checksums:/configuration_checksums'
