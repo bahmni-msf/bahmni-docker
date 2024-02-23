@@ -2,10 +2,10 @@
 
 source "../backup_restore/restore_utils.sh"
 
-BAHMNI_DOCKER_ENV_FILE=.env
+BAHMNI_DOCKER_ENV_FILE=${2:-.env}
 source ${BAHMNI_DOCKER_ENV_FILE}
 
-if [ $# -ne 1 ]
+if [ $# -lt 1 ]
 then
 log_error "Missing input for restore-artifacts-path."
 echo "Usage: ./restore_bahmni_lite.sh <restore-artifacts-path>"
