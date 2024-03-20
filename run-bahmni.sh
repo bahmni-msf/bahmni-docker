@@ -203,6 +203,16 @@ function martFullLoad {
     runMart
 }
 
+function getMartFile {
+    source $file
+    docker cp bahmni-lite-mart-1:$BAHMNI_MART_JSON_CONFIG_FILE .
+}
+
+function putMartFile {
+    source $file
+    docker cp bahmni-mart.json bahmni-lite-mart-1:$BAHMNI_MART_JSON_CONFIG_FILE
+}
+
 # Check Docker Compose versions first
 checkDockerAndDockerComposeVersion
 # Check Directory is correct
@@ -221,6 +231,8 @@ echo "8) RESET and ERASE All Volumes/Databases from docker!"
 echo "9) RESTART a service"
 echo "10) Run mart in incremental load"
 echo "11) Run mart in Full load"
+echo "12) Get mart.json file"
+echo "13) Update the mart.json in container"
 echo "0) STATUS of all services"
 echo "-------------------------"
 read option
@@ -242,6 +254,8 @@ case $option in
     9) restartService $file;;
     10) martIncrementalLoad;;
     11) martFullLoad $file;;
+    12) getMartFile $file;;
+    13) putMartFile $file;;
     0) showStatus $file;;
     *) echo "Invalid option selected";;
 esac
