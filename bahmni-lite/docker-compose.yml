@@ -162,13 +162,14 @@ services:
       OPENMRS_DB_USERNAME: ${OPENMRS_DB_USERNAME:?}
       OPENMRS_DB_PASSWORD: ${OPENMRS_DB_PASSWORD:?}
       DEFAULT_CONFIG_FILE_PATH_FOR_MART: ${DEFAULT_CONFIG_FILE_PATH_FOR_MART}
+      BAHMNI_MART_JSON_CONFIG_FILE: ${BAHMNI_MART_JSON_CONFIG_FILE:-/bahmni-mart/conf/bahmni-mart.json}
     depends_on:
      - martdb
      - openmrsdb
      - openmrs
     volumes:
      - 'bahmni-clinical-forms:/home/bahmni/clinical_forms'
-     - "${CONFIG_VOLUME:?}:/home/bahmni/bahmni_config/:ro"
+     - "${CONFIG_VOLUME:?}:/home/bahmni/bahmni_config/"
 
   bahmni-web:
     image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/bahmni-web:${BAHMNI_WEB_IMAGE_TAG:?}
