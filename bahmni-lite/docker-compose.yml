@@ -169,7 +169,8 @@ services:
      - openmrs
     volumes:
      - 'bahmni-clinical-forms:/home/bahmni/clinical_forms'
-     - "${CONFIG_VOLUME:?}:/home/bahmni/bahmni_config/"
+     - '${CONFIG_VOLUME:?}:/home/bahmni/bahmni_config'
+     - 'custom-sql:/home/bahmni/custom-sql'
 
   bahmni-web:
     image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/bahmni-web:${BAHMNI_WEB_IMAGE_TAG:?}
@@ -261,6 +262,7 @@ services:
         - 'bahmni-uploaded-files:/mounts/bahmni-uploaded-files'
         - 'bahmni-queued-reports:/mounts/bahmni-queued-reports'
         - 'configuration_checksums:/mounts/configuration_checksums'
+        - 'custom-sql:/mounts/custom-sql'
 
 volumes:
   openmrs-data:
@@ -275,3 +277,4 @@ volumes:
   bahmni-uploaded-files:
   bahmni-queued-reports:
   reportsdbdata:
+  custom-sql:
