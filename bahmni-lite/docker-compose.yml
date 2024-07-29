@@ -36,7 +36,7 @@ services:
 
   openmrs:
     profiles: ["emr","bahmni-lite", "bahmni-mart"]
-    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/openmrs:${OPENMRS_IMAGE_TAG:?}
+    image: docker.io/bahmni/openmrs:ipd
     environment:
       TZ: ${TZ}
       OMRS_DB_NAME: ${OPENMRS_DB_NAME:?}
@@ -263,6 +263,14 @@ services:
         - 'bahmni-queued-reports:/mounts/bahmni-queued-reports'
         - 'configuration_checksums:/mounts/configuration_checksums'
         - 'custom-sql:/mounts/custom-sql'
+  ipd:
+    image: bahmni/microfrontend-ipd:${IPD_TAG:?}
+    container_name: ipd
+    profiles: [ "emr","bahmni-standard","bahmni-mart" ]
+    restart: ${RESTART_POLICY}
+    # volumes:
+    #   - "${IPD_PATH:?}/dist/federation/:/usr/local/apache2/htdocs/ipd"
+    logging: *log-config
 
 volumes:
   openmrs-data:
