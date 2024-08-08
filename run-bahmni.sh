@@ -210,7 +210,8 @@ function getMartFile {
 
 function putMartFile {
     source $file
-    docker cp bahmni-mart.json bahmni-lite-mart-1:$BAHMNI_MART_JSON_CONFIG_FILE
+    docker cp bahmni-mart.json bahmni-lite-bahmni-config-1:/etc/bahmni_config/bahmni-mart/bahmni-mart.json
+    docker compose --env-file "$file" restart bahmni-config
 }
 
 # Check Docker Compose versions first
