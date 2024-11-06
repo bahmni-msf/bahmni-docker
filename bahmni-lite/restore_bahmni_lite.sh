@@ -13,7 +13,7 @@ exit 1
 fi
 
 if ! is_directory_exists "$1" || is_directory_empty "$1" ; then
-log_error "Invalid restore-artifacts-path: $1 Directory does not exist or is empty."   
+log_error "Invalid restore-artifacts-path: $1 Directory does not exist or is empty."
 exit 1
 fi
 
@@ -35,7 +35,11 @@ crater_atomfeed_db_backup_file_path="${RESTORE_ARTIFACTS_PATH}/crateratomfeeddb_
 
 log_info "Starting Database Restore..."
 
-restore_db "mysql" $OPENMRS_DB_NAME $OPENMRS_DB_USERNAME $OPENMRS_DB_PASSWORD $openmrs_db_service_name $openmrs_db_backup_file_path
+if grep -q server-id "./openmrsdb/docker.cnf"; then
+    log_error "Please revert changes on 'docker.cnf'"
+else
+    restore_db "mysql" $OPENMRS_DB_NAME $OPENMRS_DB_USERNAME $OPENMRS_DB_PASSWORD $openmrs_db_service_name $openmrs_db_backup_file_path
+fi
 
 restore_db "mysql" $REPORTS_DB_NAME $REPORTS_DB_USERNAME $REPORTS_DB_PASSWORD $reports_db_service_name $reports_db_backup_file_path
 

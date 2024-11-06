@@ -118,11 +118,19 @@ function restore_db() {
         if [[ $(is_db_empty $db_type $db_name $db_username $db_password $db_service_name) -eq 1 ]]; then
 
             if [[ $db_type == "mysql" ]]; then
-                log_info "Starting MySQL Restore for database: $db_name"
-                if [[ $BAHMNI_DOCKER_ENV_FILE != "$COMPOSE_ENV_PROD" ]]; then
+                if [[ $db_username == $OPENMRS_DB_USERNAME ]]; then
+                    log_info "Grant all privileges to the user"
                     docker compose --env-file ${BAHMNI_DOCKER_ENV_FILE} exec -T $db_service_name mysql -u root -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL ON *.* to '$OPENMRS_DB_USERNAME'@'%' IDENTIFIED BY '$OPENMRS_DB_PASSWORD';FLUSH PRIVILEGES;"
                 fi
+
+                log_info "Starting MySQL Restore for database: $db_name"
                 docker compose --env-file ${BAHMNI_DOCKER_ENV_FILE} exec -T $db_service_name mysql -u $db_username --password=$db_password $db_name < $db_backup_file_path
+
+                # if [[ $db_username == $OPENMRS_DB_USERNAME ]]; then
+                #     log_info "Revoke granted permission for user '$OPENMRS_DB_USERNAME'..."
+                #     docker compose --env-file ${BAHMNI_DOCKER_ENV_FILE} exec -T $db_service_name mysql -u root -p$MYSQL_ROOT_PASSWORD -e "REVOKE GRANT OPTION ON *.* FROM '$OPENMRS_DB_USERNAME'@'%';"
+                #     docker compose --env-file ${BAHMNI_DOCKER_ENV_FILE} exec -T $db_service_name mysql -u root -p$MYSQL_ROOT_PASSWORD -e "REVOKE ALL PRIVILEGES ON *.* FROM '$OPENMRS_DB_USERNAME'@'%';"
+                # fi
             elif [[ $db_type == "postgres" ]]; then
                 log_info "Starting Postgres Restore for database: $db_name"
                 docker compose --env-file ${BAHMNI_DOCKER_ENV_FILE} exec -T $db_service_name psql -U $db_username -d $db_name -q -f - < $db_backup_file_path
