@@ -65,8 +65,9 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD}
       OMRS_DOCKER_ENV: ${OPENMRS_DOCKER_ENV}
       OMRS_C3P0_MAX_SIZE: ${OMRS_C3P0_MAX_SIZE}
-    #ports:
-      # - ${OMRS_DEV_DEBUG_PORT}:${OMRS_DEV_DEBUG_PORT}
+    # ports:
+    #   - 4000:4000
+    #   - ${OMRS_DEV_DEBUG_PORT}:${OMRS_DEV_DEBUG_PORT}
     volumes:
       - "${CONFIG_VOLUME:?}:/etc/bahmni_config/:ro"
       # - "bahmni-lab-results:/home/bahmni/uploaded_results"
@@ -77,6 +78,8 @@ services:
       - 'bahmni-clinical-forms:/home/bahmni/clinical_forms'
       - 'configuration_checksums:/openmrs/data/configuration_checksums'
       # - 'sms-token:/openmrs/data/sms-token'
+      # - '../glowroot:/opt/glowroot'
+      # - 'glowroot-data:/opt/glowroot/data'
 
     depends_on:
       - openmrsdb
@@ -291,3 +294,4 @@ volumes:
   bahmni-queued-reports:
   reportsdbdata:
   custom-sql:
+  # glowroot-data:
