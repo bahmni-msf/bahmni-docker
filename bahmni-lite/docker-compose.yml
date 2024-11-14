@@ -106,6 +106,8 @@ services:
     image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/postgres:${METABASE_POSTGRES_IMAGE_TAG:?}
     restart: always
     profiles: ["metabase", "bahmni-mart" ,"emr"]
+    ports:
+      - ${METABASE_DB_PORT:-5432}
     environment:
       TZ: ${TZ}
       POSTGRES_DB: ${METABASE_DB_NAME:?}
@@ -146,6 +148,8 @@ services:
     image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/postgres:${BAHMNI_MART_DB_IMAGE_TAG:?}
     profiles: ["bahmni-mart" ,"emr"]
     restart: always
+    ports:
+      - ${MART_DB_PORT:-5432}
     environment:
       TZ: ${TZ}
       POSTGRES_DB: ${MART_DB_NAME:?}
