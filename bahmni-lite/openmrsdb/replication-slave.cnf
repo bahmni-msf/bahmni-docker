@@ -1,0 +1,11 @@
+[mysqld]
+skip-host-cache
+skip-name-resolve
+
+# For replication
+server-id = 2
+read_only = ON
+log_bin = mysql-bin
+binlog_do_db = openmrs
+default_authentication_plugin = mysql_native_password
+sync_binlog = 1

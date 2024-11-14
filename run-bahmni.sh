@@ -2,7 +2,7 @@
 
 
 function checkDockerAndDockerComposeVersion {
-    
+
     # Check if docker is installed
     if ! [ -x "$(command -v docker)" ]; then
     echo 'Error: docker is not installed. Please install docker first!' >&2
@@ -17,7 +17,7 @@ function checkDockerAndDockerComposeVersion {
     if [ "${DOCKER_SERVER_VERSION_MAJOR}" -ge 20 ]; then
         echo 'Docker version >= 20.10.13, using Docker Compose V2'
     else
-        echo 'Docker versions < 20.x are not supported' >&2 
+        echo 'Docker versions < 20.x are not supported' >&2
         exit 1
     fi
 
@@ -47,57 +47,56 @@ function checkIfDirectoryIsCorrect {
 function start {
     echo "Executing command: 'docker compose up -d' with the images specified in the $file file"
     echo "Starting Bahmni with default profile from $file file"
-    docker compose --env-file "$file" up -d
+    docker compose $env_files up -d
 }
-
 
 function stop {
     echo "Executing command: 'docker compose down' with all profiles"
-    docker compose --env-file "$file" --profile emr --profile bahmni-lite --profile bahmni-standard --profile bahmni-mart down
+    docker compose $env_files --profile emr --profile bahmni-lite --profile bahmni-standard --profile bahmni-mart down
 }
 
 function sshIntoService {
     # Using all profiles, so that we can status of all services
     echo "Listing the running services..."
-    docker compose --env-file "$file" --profile bahmni-lite --profile bahmni-standard --profile bahmni-mart ps
+    docker compose $env_files --profile bahmni-lite --profile bahmni-standard --profile bahmni-mart ps
 
     echo "Enter the SERVICE name which you wish to ssh into:"
     read serviceName
-    
-    docker compose --env-file "$file" exec $serviceName /bin/sh
+
+    docker compose $env_files exec $serviceName /bin/sh
 }
 
 function showLogsOfService {
     # Using all profiles, so that we can status of all services
     echo "Listing the running services..."
-    docker compose --env-file "$file" --profile bahmni-lite --profile bahmni-standard --profile bahmni-mart ps
+    docker compose $env_files --profile bahmni-lite --profile bahmni-standard --profile bahmni-mart ps
 
     echo "Enter the SERVICE name whose logs you wish to see:"
     read serviceName
-    
-    docker compose --env-file "$file" logs $serviceName -f
+
+    docker compose $env_files logs $serviceName -f
 }
 
 
 function showOpenMRSlogs {
     echo "Opening OpenMRS Logs..."
-    docker compose logs openmrs -f 
+    docker compose logs openmrs -f
 }
 
 function startMart {
     echo "Starting services with profile 'bahmni-mart'..."
-    docker compose --env-file "$file" --profile bahmni-mart up -d
+    docker compose $env_files --profile bahmni-mart up -d
 }
 
 function pullLatestImages {
     echo "Pulling all the images specified in the $file file..."
-    docker compose --env-file "$file" pull
+    docker compose $env_files pull
 }
 
 function showStatus {
     echo "Listing status of running Services with command: 'docker compose ps'"
     # Using all profiles, so that we can status of all services
-    docker compose --env-file "$file" --profile bahmni-lite --profile bahmni-standard --profile bahmni-mart ps
+    docker compose $env_files --profile bahmni-lite --profile bahmni-standard --profile bahmni-mart ps
 
 }
 
@@ -122,24 +121,24 @@ confirm() {
 function resetAndEraseALLVolumes {
   echo "Listing current volumes..."
   docker volume ls
-  echo "---"  
+  echo "---"
   if confirm "WARNING: Are you sure you want to DELETE all Bahmni Data and Volumes??"; then
     echo "Proceeding with a DELETE.... "
-    
+
     echo "1. Stopping all services, using all profiles.."
-    docker compose --env-file "$file" --profile emr --profile bahmni-lite --profile bahmni-standard --profile bahmni-mart down
-    
-    docker compose --env-file "$file" ps
-    
+    docker compose $env_files --profile emr --profile bahmni-lite --profile bahmni-standard --profile bahmni-mart down
+
+    docker compose $env_files ps
+
     echo "2. Deleting all volumes (-v) .."
-    docker compose --env-file "$file" --profile emr --profile bahmni-lite --profile bahmni-standard --profile bahmni-mart down -v
+    docker compose $env_files --profile emr --profile bahmni-lite --profile bahmni-standard --profile bahmni-mart down -v
     RESULT=$?
     if [ $RESULT -eq 0 ]; then
         echo "Volumes deleted successfully."
     else
         echo "[ERROR] Command threw an error! Trying stopping all services, and then retry."
     fi
-    
+
     echo "Volumes remaining on machine 'docker volume ls': "
     docker volume ls
 
@@ -152,22 +151,22 @@ function resetAndEraseALLVolumes {
 
   else
     echo "OK Aborting :)"
-  fi  
+  fi
 }
 
 function restartService {
-    # One can ONLY restart services in current profile (limitation of docker compose restart command). 
+    # One can ONLY restart services in current profile (limitation of docker compose restart command).
     echo "Listing the running services from current profile ($file file) that can be restarted..."
-    docker compose --env-file "$file" ps
+    docker compose $env_files ps
 
     echo "Enter the name of the SERVICE to restart:"
     read serviceName
-    
+
     echo "Restarting SERVICE: $serviceName"
-    docker compose --env-file "$file" restart $serviceName
+    docker compose $env_files restart $serviceName
 
     if confirm "Do you want to see the service logs?"; then
-        docker compose --env-file "$file" logs $serviceName -f
+        docker compose $env_files logs $serviceName -f
     fi
 }
 
@@ -211,7 +210,7 @@ function getMartFile {
 function putMartFile {
     source $file
     docker cp bahmni-mart.json bahmni-lite-bahmni-config-1:/etc/bahmni_config/bahmni-mart/bahmni-mart.json
-    docker compose --env-file "$file" restart bahmni-config
+    docker compose $env_files restart bahmni-config
 }
 
 # Check Docker Compose versions first
@@ -239,8 +238,26 @@ echo "-------------------------"
 read option
 
 file=".env"
+additional_file=""
+
 if ! [ "$1" == "" ]; then
     file="$1"
+fi
+
+if [[ "$INSTANCE_TYPE" == "master" ]]; then
+    additional_file=".env.master"
+elif [[ "$INSTANCE_TYPE" == "slave" ]]; then
+    additional_file=".env.slave"
+elif [[ -z "$INSTANCE_TYPE" ]]; then
+    echo "INSTANCE_TYPE is not set; using only the default .env file."
+else
+    echo "Error: INSTANCE_TYPE must be 'master' or 'slave' if defined."
+    exit 1
+fi
+
+env_files="--env-file $file"
+if [[ -n "$additional_file" ]]; then
+    env_files="$env_files --env-file $additional_file"
 fi
 
 case $option in
