@@ -35,7 +35,7 @@ crater_atomfeed_db_backup_file_path="${RESTORE_ARTIFACTS_PATH}/crateratomfeeddb_
 
 log_info "Starting Database Restore..."
 
-if grep -q server-id "./openmrsdb/docker.cnf"; then
+if grep -q server-id "$OPENMRS_DB_CNF_PATH"; then
     log_error "Please revert changes on 'docker.cnf'"
 else
     restore_db "mysql" $OPENMRS_DB_NAME $OPENMRS_DB_USERNAME $OPENMRS_DB_PASSWORD $openmrs_db_service_name $openmrs_db_backup_file_path
