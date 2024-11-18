@@ -48,14 +48,14 @@ function copy_from_restore_to_mount(){
 }
 
 log_info "Starting File System Restore into volume mounts...."
-copy_from_restore_to_mount /restore-artifacts/patient_images /mounts/bahmni-patient-images
-copy_from_restore_to_mount /restore-artifacts/document_images /mounts/bahmni-document-images
-copy_from_restore_to_mount /restore-artifacts/clinical_forms /mounts/bahmni-clinical-forms
+#copy_from_restore_to_mount /restore-artifacts/patient_images /mounts/bahmni-patient-images
+#copy_from_restore_to_mount /restore-artifacts/document_images /mounts/bahmni-document-images
+#copy_from_restore_to_mount /restore-artifacts/clinical_forms /mounts/bahmni-clinical-forms
 copy_from_restore_to_mount /restore-artifacts/configuration_checksums /mounts/configuration_checksums
-copy_from_restore_to_mount /restore-artifacts/uploaded_results /mounts/bahmni-lab-results
-copy_from_restore_to_mount /restore-artifacts/reports /mounts/bahmni-queued-reports
-copy_from_restore_to_mount /restore-artifacts/uploaded-files /mounts/bahmni-uploaded-files
+#copy_from_restore_to_mount /restore-artifacts/uploaded_results /mounts/bahmni-lab-results
+#copy_from_restore_to_mount /restore-artifacts/reports /mounts/bahmni-queued-reports
+#copy_from_restore_to_mount /restore-artifacts/uploaded-files /mounts/bahmni-uploaded-files
 copy_from_restore_to_mount /restore-artifacts/dcm4chee_archive /mounts/dcm4chee-archive
-copy_from_restore_to_mount /restore-artifacts/custom-sql /mounts/custom-sql
+#copy_from_restore_to_mount /restore-artifacts/viewSql /mounts/viewSql
 
 log_info -e "File System Restore completed."
