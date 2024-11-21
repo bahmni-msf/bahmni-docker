@@ -94,7 +94,7 @@ services:
     # As we require master slave setup on Prod, exposing the port by default and added env file path.
     env_file: ${OPENMRS_DB_ENV_PATH:-}
     ports:
-      - ${OPENMRS_DB_PORT:-3306}
+      - ${OPENMRS_DB_PORT:-3306}:3306
     volumes:
       - "${OPENMRS_DB_CNF_PATH}:/etc/mysql/conf.d/docker.cnf"
       - 'openmrsdbdata:/var/lib/mysql'
@@ -107,7 +107,7 @@ services:
     restart: always
     profiles: ["metabase", "bahmni-mart" ,"emr"]
     ports:
-      - ${METABASE_DB_PORT:-5432}
+      - ${METABASE_DB_PORT:-5432}:5432
     environment:
       TZ: ${TZ}
       POSTGRES_DB: ${METABASE_DB_NAME:?}
@@ -149,7 +149,7 @@ services:
     profiles: ["bahmni-mart" ,"emr"]
     restart: always
     ports:
-      - ${MART_DB_PORT:-5432}
+      - ${MART_DB_PORT:-5433}:5432
     environment:
       TZ: ${TZ}
       POSTGRES_DB: ${MART_DB_NAME:?}
