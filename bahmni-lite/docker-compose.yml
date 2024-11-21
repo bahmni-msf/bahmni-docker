@@ -18,7 +18,7 @@ x-log-config: &log-config
 services:
 
   proxy:
-    image: '485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/proxy:${PROXY_IMAGE_TAG:?}'
+    image: '${ECR_URL}/bahmni-msf-lite/proxy:${PROXY_IMAGE_TAG:?}'
     #volumes:
       # - ${CERTIFICATE_PATH}:/etc/tls
     restart: always
@@ -30,7 +30,7 @@ services:
       TZ: ${TZ}
 
   bahmni-config:
-    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/malawi-config:${CONFIG_IMAGE_TAG:?}
+    image: ${ECR_URL}/bahmni-msf-lite/malawi-config:${CONFIG_IMAGE_TAG:?}
     restart: always
     volumes:
       - '${CONFIG_VOLUME:?}:/usr/local/bahmni_config'
@@ -38,7 +38,7 @@ services:
 
   openmrs:
     profiles: ["emr","bahmni-lite", "bahmni-mart"]
-    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/openmrs:${OPENMRS_IMAGE_TAG:?}
+    image: ${ECR_URL}/bahmni-msf-lite/openmrs:${OPENMRS_IMAGE_TAG:?}
     restart: always
     environment:
       TZ: ${TZ}
@@ -87,7 +87,7 @@ services:
     logging: *log-config
 
   openmrsdb:
-    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/mysql:${OPENMRS_DB_IMAGE_NAME:?}
+    image: ${ECR_URL}/bahmni-lite/mysql:${OPENMRS_DB_IMAGE_NAME:?}
     restart: always
     profiles: ["emr","bahmni-lite", "metabase", "bahmni-mart"]
     command: --character-set-server=utf8 --collation-server=utf8_general_ci
@@ -103,7 +103,7 @@ services:
     logging: *log-config
 
   metabasedb:
-    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/postgres:${METABASE_POSTGRES_IMAGE_TAG:?}
+    image: ${ECR_URL}/bahmni-lite/postgres:${METABASE_POSTGRES_IMAGE_TAG:?}
     restart: always
     profiles: ["metabase", "bahmni-mart" ,"emr"]
     ports:
@@ -117,7 +117,7 @@ services:
       - 'metabase-data:/var/lib/postgresql/data'
 
   metabase:
-    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/bahmni/bahmni-metabase:${METABASE_IMAGE_TAG:?}
+    image: ${ECR_URL}/bahmni-lite/bahmni/bahmni-metabase:${METABASE_IMAGE_TAG:?}
     restart: always
     profiles: ["metabase", "bahmni-mart" ,"emr"]
     ports:
@@ -145,7 +145,7 @@ services:
      - metabasedb
 
   martdb:
-    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/postgres:${BAHMNI_MART_DB_IMAGE_TAG:?}
+    image: ${ECR_URL}/bahmni-lite/postgres:${BAHMNI_MART_DB_IMAGE_TAG:?}
     profiles: ["bahmni-mart" ,"emr"]
     restart: always
     ports:
@@ -159,7 +159,7 @@ services:
       - 'mart-data:/var/lib/postgresql/data'
 
   mart:
-    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/mart:${BAHMNI_MART_IMAGE_TAG:?}
+    image: ${ECR_URL}/bahmni-msf-lite/mart:${BAHMNI_MART_IMAGE_TAG:?}
     profiles: ["bahmni-mart" ,"emr"]
     restart: always
     environment:
@@ -185,7 +185,7 @@ services:
      - '/home/bahmni/viewSql:/home/bahmni/viewSql'
 
   bahmni-web:
-    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/bahmni-web:${BAHMNI_WEB_IMAGE_TAG:?}
+    image: ${ECR_URL}/bahmni-msf-lite/bahmni-web:${BAHMNI_WEB_IMAGE_TAG:?}
     profiles: ["emr","bahmni-lite","bahmni-mart"]
     restart: always
     volumes:
@@ -195,7 +195,7 @@ services:
     logging: *log-config
 
   implementer-interface:
-    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/implementer-interface:${IMPLEMENTER_INTERFACE_IMAGE_TAG:?}
+    image: ${ECR_URL}/bahmni-msf-lite/implementer-interface:${IMPLEMENTER_INTERFACE_IMAGE_TAG:?}
     profiles: ["implementer-interface","emr","bahmni-lite"]
     restart: always
     #volumes:
@@ -205,7 +205,7 @@ services:
     logging: *log-config
 
 #  reports:
-#    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/bahmni/reports:${REPORTS_IMAGE_TAG:?}
+#    image: ${ECR_URL}/bahmni-lite/bahmni/reports:${REPORTS_IMAGE_TAG:?}
 #    profiles: ["reports","bahmni-lite", "emr"]
 #    restart: always
 #    environment:
@@ -231,7 +231,7 @@ services:
 #
 #  reportsdb:
 #    platform: linux/amd64
-#    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/mysql:${REPORTS_DB_TAG:?}
+#    image: ${ECR_URL}/bahmni-lite/mysql:${REPORTS_DB_TAG:?}
 #    profiles: ["reports","bahmni-lite", "emr"]
 #    restart: always
 #    environment:
@@ -245,7 +245,7 @@ services:
 #    logging: *log-config
 
   patient-documents:
-    image: '485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-lite/bahmni/patient-documents:${PATIENT_DOCUMENTS_TAG:?}'
+    image: '${ECR_URL}/bahmni-lite/bahmni/patient-documents:${PATIENT_DOCUMENTS_TAG:?}'
     profiles: ["emr","bahmni-lite"]
     restart: always
     volumes:
@@ -260,7 +260,7 @@ services:
     logging: *log-config
 
   appointments:
-    image: 485402728093.dkr.ecr.ap-south-1.amazonaws.com/bahmni-msf-lite/appointments:${APPOINTMENTS_IMAGE_TAG:?}
+    image: ${ECR_URL}/bahmni-msf-lite/appointments:${APPOINTMENTS_IMAGE_TAG:?}
     profiles: ["emr","bahmni-lite"]
     restart: always
     # volumes:
