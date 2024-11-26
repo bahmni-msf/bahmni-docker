@@ -107,7 +107,7 @@ services:
     restart: always
     profiles: ["metabase", "bahmni-mart" ,"emr"]
     ports:
-      - ${METABASE_DB_PORT:-5432}:5432
+      - ${METABASE_DB_REPLICATION_PORT:-5432}:5432
     environment:
       TZ: ${TZ}
       POSTGRES_DB: ${METABASE_DB_NAME:?}
